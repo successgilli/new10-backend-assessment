@@ -1,0 +1,53 @@
+service: new10-backend-assignment
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-west-1
+  environment:
+    APP_NAME: ${self:service}
+    AWS_ACCESS_KEY_ID: MockAccessKeyId
+    AWS_SECRET_ACCESS_KEY: MockSecretAccessKey
+
+plugins:
+  - serverless-dynamodb
+  - serverless-offline
+
+custom:
+  serverless-dynamodb:
+    start:
+      port: 8000
+      docker: true
+
+functions:
+  function1:
+    name: function1
+    handler: src/app1/functions.function1
+    events:
+      - http:
+          path: /create/{amount}
+          method: get
+
+  function2:
+    name: function2
+    handler: src/app1/functions.function2
+    events:
+      - http:
+          path: /delete/{id}
+          method: get
+
+  function3:
+    name: function3
+    handler: src/app1/functions.function3
+    events:
+      - http:
+          path: /all
+          method: get
+
+  function4:
+    name: function4
+    handler: src/app1/functions.function4
+    events:
+      - http:
+          path: /disburse/{id}
+          method: get

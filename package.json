@@ -1,0 +1,40 @@
+{
+  "name": "new10-backend-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "deploy": "sls deploy --stage",
+    "lint": "eslint src",
+    "lint:fix": "npm run lint -- --fix",
+    "start": "NODE_ENV=development serverless offline start",
+    "test": "NODE_ENV=development LOG_LEVEL=error jest --coverage",
+    "test:watch": "NODE_ENV=development LOG_LEVEL=error jest --watch"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.1",
+    "eslint": "^4.7.2",
+    "eslint-plugin-prettier": "^2.1.2",
+    "jest": "^29.7.0",
+    "prettier": "^1.7.2",
+    "prettier-eslint": "^8.2.0",
+    "serverless": "^3.38.0",
+    "serverless-dynamodb": "^0.2.51",
+    "serverless-offline": "^13.3.3"
+  },
+  "dependencies": {
+    "dynamodb": "^1.1.2",
+    "joi": "^17.12.2"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src/"
+    ],
+    "verbose": true,
+    "testEnvironment": "node"
+  }
+}
