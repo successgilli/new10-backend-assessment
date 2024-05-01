@@ -1,8 +1,8 @@
 # Node.js Assignment (Serverless)
 
-Congratulations, and welcome to the New10 Backend Engineer assignment!
+Congratulations, and welcome to the New10 Technical assignment!
 
-We would like to see you (re)write a small NodeJS / Serverless app to showcase your knowledge of backend, serverless and API design using modern backend tools. Below you will find some recommendations from us on how you should approach this assignment, as well as a short brief for the app’s requirements.
+We would like to see you (re)write a small NodeJS / Serverless app to showcase your knowledge of backend, serverless and API design using modern backend tools, as well as debug and make the necessary updates to maintain the functionality in a corresponding React web app. Below you will find some recommendations from us on how you should approach this assignment, as well as a short brief for the app’s requirements.
 
 Additionally we have provided some instructions on how to share your project with us. Please don’t hesitate to reach out with any further questions and enjoy!
 
@@ -24,6 +24,7 @@ Take our existing “legacy” loan application and deliver an updated functiona
 
 ### Requirements
 
+#### Backend
 1. Redesign the API and implement proper validations on inputs, including proper error messages and status code.
 2. Extend the `/create` loan endpoint to also receive the `id` of the company applying for the loan.
     - Ensure the `id` is validated with [Test KVK API](#test-kvk-api) (see more info about the Test KvK API below), only companies present in this API should be accepted.
@@ -34,6 +35,16 @@ Take our existing “legacy” loan application and deliver an updated functiona
     - Both `app1` and `app2` are just folders and don't actually represent any logical/physical boundaries, you're free to rename and reorganize these to better fit the new structure you'll implement in the whole app.
 4. Ensure the [OpenAPI specification](./docs/openapi.yml) reflects all the changes made to the API (codebase).
 5. Basic functionality should be validated with unit tests (but be pragmatic and don't try to cover 100%).
+
+#### Frontend (fullstack position only)
+
+> Please only work on the frontend requirements below in case you're applying for a fullstack position.
+
+1. Update web app to best practices while maintaining a functional state to Create, Disburse, and Delete loans
+    - Styling/design updates for Web App are not necessary for the assignment, unless it hurts your eyeballs to see such a user-unfriendly UI 😉
+2. Successfully run the provided integration tests to validate functionality
+
+
 
 ### Test KVK API
 
@@ -53,6 +64,7 @@ curl -H "apikey: TEST_API_KEY_HERE" https://api.kvk.nl/test/api/v1/naamgevingen/
 - Think about your error handling flow.
 - Think about the libraries used, don’t take the libraries that we included as mandatory.
 - Rethink how the example project uses async/await.
+- If changes are necessary for running the applications, please update the README documentation
 
 ## Getting started with the codebase
 
@@ -65,12 +77,9 @@ curl -H "apikey: TEST_API_KEY_HERE" https://api.kvk.nl/test/api/v1/naamgevingen/
 ### Getting started
 
 1. Please clone this repository to your own space, making sure you create your new version as a Private repo (See further instructions below on how to share when finished).
-2. The project is already setup for local development, so getting up to speed should be a breeze. It makes use of AWS Lambda for compute, and DynamoDB for storage, both of which are already pre-configured.
-
-- Install dependencies: `npm install`
-- Run tests: `npm test`
-- Run a development server with [Serverless Offline](https://www.npmjs.com/package//serverless-offline): `npm start`
-    - Make sure that the Docker daemon is running which is required for DynamoDB Local to run
+2. The project is already setup for local development, so getting up to speed should be a breeze. It is pre-configured to run completely offline and should not require the deployment of any resources to AWS or elsewhere. See app README files below for specific "Getting Started" information:
+    - [Backend Server documentation](./src/README.md)
+    - [Frontend Web App documentation](./web/README.md)
 
 ## Uploading and sharing your project :rocket:
 
