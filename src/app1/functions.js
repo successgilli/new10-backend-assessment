@@ -6,6 +6,8 @@ module.exports.function1 = async event => {
     var Joi = require('joi')
 
     try {
+        console.log('event', JSON.stringify(event))
+
         dynamo.AWS.config.update({
             region: 'localhost',
             endpoint: 'http://localhost:8000',
@@ -54,8 +56,10 @@ module.exports.function2 = async event => {
         dynamo.AWS.config.update({
             region: 'localhost',
             endpoint: 'http://localhost:8000',
-            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'AKIAIOSFODNN7EXAMPLE',
+            secretAccessKey:
+                process.env.AWS_SECRET_ACCESS_KEY ||
+                'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
         })
 
         var Loan = dynamo.define('Loan', {
@@ -146,5 +150,5 @@ module.exports.function4 = async () => {
 }
 
 module.exports.function6 = async () => {
-    // I'll make call the endpoint on app2 to update the loan status
+    // I'll call the endpoint on app2 to update the loan status
 }

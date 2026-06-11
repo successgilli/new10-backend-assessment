@@ -16,7 +16,7 @@ test("Create, Update, and Delete Loans", async ({ page }) => {
         await page.getByLabel("KvK Number").fill(KVK_1);
         await page.getByLabel("Amount").fill("50000");
         // submit create form
-        await page.getByText("Create").click();
+        await page.getByRole("button", { name: /create/i }).click();
 
         // wait for at least one loan item to render
         await expect(await page.getByTestId("loan-item").first()).toBeVisible();
@@ -32,7 +32,7 @@ test("Create, Update, and Delete Loans", async ({ page }) => {
             page
                 .getByTestId("loan-item")
                 .last()
-                .getByText("offered")
+                .getByText(/offered/i)
         ).toBeVisible();
     });
 
@@ -45,17 +45,17 @@ test("Create, Update, and Delete Loans", async ({ page }) => {
 
             // disburse loan
             await targetLoanEl
-                .getByRole("button", { name: "disburse" })
+                .getByRole("button", { name: /disburse/i })
                 .click();
 
             // check that status is updated
-            await expect(targetLoanEl.getByText("disbursed")).toBeVisible();
+            await expect(targetLoanEl.getByText(/disbursed/i)).toBeVisible();
         }
     );
 
     await test.step("Delete Loan and see updated Loans list", async () => {
         // click disburse
-        await targetLoanEl.getByRole("button", { name: "delete" }).click();
+        await targetLoanEl.getByRole("button", { name: /delete/i }).click();
 
         // check that status is updated
         await expect(page.getByText(targetLoanId)).not.toBeVisible();

@@ -2,6 +2,8 @@ node_modules
 jspm_packages
 .serverless
 .env
+.env.local
+.env.*.local
 .idea
 .gradle
 logs
@@ -9,6 +11,7 @@ logs
 npm-debug.log*
 coverage
 .npm
-coverage
+dist
+build
 .DS_Store
 .vscode
