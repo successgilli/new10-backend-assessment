@@ -20,7 +20,7 @@ Additionally we have provided some instructions on how to share your project wit
 
 ## Time expectation
 
-We suggest aiming for **4–6 hours** of focused work on this assignment. We value pragmatism and prioritization, it's okay to leave `TODO` comments describing what you would do with more time.
+We suggest aiming for **4 hours** of focused work on this assignment. We value pragmatism and prioritization, it's okay to leave `TODO` comments describing what you would do with more time.
 
 ## Keep it simple
 
