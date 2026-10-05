@@ -113,3 +113,85 @@ Once you have finished, please send us back the link to your newly created priva
 
 - GitLab: @sean.kiefer / @rictorres.new10
 - GitHub: @sean6bucks / @rictorres
+
+
+# Solution
+
+Backend implementation for the New10 technical assignment.
+
+## Prerequisites
+
+- Node.js 20+
+- npm
+- Docker
+
+No environment variables need to be configured manually for local development. See serverless file.
+
+## Running locally
+
+Install dependencies:
+
+    npm ci
+
+Start the application and local DynamoDB:
+
+    npm start
+
+The API is available at:
+
+    http://localhost:3000/dev
+
+## Tests
+
+Run the unit tests:
+
+    npm test
+
+## API
+You can use swagger ui run against the openapi.yml file in the code base for a better UI experience.
+
+### Create loan
+
+    curl -X POST http://localhost:3000/dev/create -H "Content-Type: application/json" -d '{"amount":10000,"companyID":"69599084"}'
+
+### Get all loans
+
+    curl http://localhost:3000/dev/all
+
+### Delete loan
+
+Replace the ID with an existing loan ID:
+
+    curl -X DELETE http://localhost:3000/dev/delete/f0982a88-2767-4161-be38-ace0246b4d39
+
+### Disburse loan
+
+Replace the ID with an existing loan ID:
+
+    curl -s -X PATCH http://localhost:3000/dev/disburse/95534cc6-c265-4644-a5b9-f07d539de093 | jq
+
+## API Documentation
+
+The OpenAPI specification is available in `docs/openapi.yml`.
+
+## Implementation Notes
+
+Loan creation validates the supplied company ID against the KVK test API before persisting the company and loan.
+
+Loan disbursement is split between two handlers communicating over HTTP. The public disbursement handler requests the internal loan-status handler to update the loan status to `DISBURSED`.
+
+DynamoDB Local is used for local development and is started through Docker; all handled by serverless.
+
+## Screenshots
+
+### Serverless running locally
+
+![Serverless running locally](docs/screenshots/server_started.png)
+
+### DynamoDB tables
+
+![DynamoDB local tables](docs/screenshots/tables_dynamo.png)
+
+### Tests
+
+![Unit tests](docs/screenshots/test.png)

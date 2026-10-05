@@ -8,46 +8,82 @@ provider:
     APP_NAME: ${self:service}
     AWS_ACCESS_KEY_ID: MockAccessKeyId
     AWS_SECRET_ACCESS_KEY: MockSecretAccessKey
+    APP2_URL: ${env:APP2_URL, 'http://localhost:3000/dev'}
+    KVK_SECRETE: ${env:KVK_SECRETE, 'l7xx1f2691f2520d487b902f4e0b57a0b197'}
 
 plugins:
   - serverless-dynamodb
   - serverless-offline
+  - serverless-esbuild
 
 custom:
   serverless-dynamodb:
     start:
       port: 8000
       docker: true
+      migrate: true
 
 functions:
-  function1:
-    name: function1
-    handler: src/app1/functions.function1
+  createLoan:
+    name: createLoan
+    handler: src/app1/handlers.createLoan
     events:
       - http:
-          path: /create/{amount}
-          method: get
+          path: /create
+          method: post
 
-  function2:
-    name: function2
-    handler: src/app1/functions.function2
+  deleteLoan:
+    name: deleteLoan
+    handler: src/app1/handlers.deleteLoan
     events:
       - http:
           path: /delete/{id}
-          method: get
+          method: delete
 
-  function3:
-    name: function3
-    handler: src/app1/functions.function3
+  getAll:
+    name: getAll
+    handler: src/app1/handlers.getAll
     events:
       - http:
           path: /all
           method: get
 
-  function4:
-    name: function4
-    handler: src/app1/functions.function4
+  disburse:
+    name: disburse
+    handler: src/app1/handlers.disburse
     events:
       - http:
           path: /disburse/{id}
-          method: get
+          method: patch
+
+  loans:
+    name: setLoanStatusDisbursed
+    handler: src/app2/handlers.setLoanStatusDisbursed
+    events:
+      - http:
+          path: /loans/disbursed/{id}
+          method: patch
+
+resources:
+  Resources:
+    LoanTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Loan
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+    CompanyTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Company
+        AttributeDefinitions:
+          - AttributeName: kvkNummer
+            AttributeType: S
+        KeySchema:
+          - AttributeName: kvkNummer
+            KeyType: HASH

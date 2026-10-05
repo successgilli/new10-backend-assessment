@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`setLoanStatusDisbursed updates loan status to disbursed 1`] = `
+{
+  "data": {
+    "amount": 10000,
+    "companyID": "69599084",
+    "id": "loan-1",
+    "status": "DISBURSED",
+  },
+}
+`;

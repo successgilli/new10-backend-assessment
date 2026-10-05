@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`createLoan creates a loan 1`] = `
+{
+  "data": {
+    "amount": 10000,
+    "companyID": "69599084",
+    "createdAt": Any<String>,
+    "id": Any<String>,
+    "status": "OFFERED",
+    "updatedAt": Any<String>,
+  },
+}
+`;

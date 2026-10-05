@@ -1,57 +1,253 @@
 openapi: 3.0.0
+
 info:
   title: New10 Loan API
-  description:
+  version: 1.0.0
+  description: API for creating, retrieving, deleting and disbursing loans.
 
 servers:
   - url: http://localhost:3000/dev
     description: Local development server
 
 paths:
-  /create/{amount}:
-    get:
-      summary:
-      description:
-      parameters:
-        - name: amount
-          in: path
-          required: true
-          description: Loan amount
-          schema:
-            type: number
-            format: float
-            minimum: 1
+  /create:
+    post:
+      summary: Create a loan
+      description: Creates a loan for a company after validating the company with KVK.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - companyID
+              properties:
+                amount:
+                  type: number
+                  minimum: 1
+                  example: 10000
+                companyID:
+                  type: string
+                  example: "69599084"
       responses:
         "200":
-          description: Success
+          description: Loan created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /all:
+    get:
+      summary: Get all loans
+      description: Returns all available loans.
+      responses:
+        "200":
+          description: Loans retrieved successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  amount:
-                    type: number
-                    format: float
-                  status:
-                    type: string
-                    enum:
-                      - offered
-                      - disbursed
-                  id:
-                    type: string
-                  createdAt:
-                    type: string
-                    format: date-time
+                  data:
+                    type: object
+                    properties:
+                      loans:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Loan"
+                      count:
+                        type: integer
+                    required:
+                      - loans
+                      - count
                 required:
-                  - amount
-                  - status
-                  - id
-                  - createdAt
+                  - data
         "500":
-          description: Bad request / Internal Error
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /delete/{id}:
-    get:
-  /all:
-    get:
+    delete:
+      summary: Delete a loan
+      description: Deletes a loan by ID.
+      parameters:
+        - $ref: "#/components/parameters/LoanId"
+      responses:
+        "200":
+          description: Loan deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanResponse"
+        "400":
+          description: Loan ID is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Loan not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /disburse/{id}:
-    get:
+    patch:
+      summary: Disburse a loan
+      description: Requests the loan status update service to disburse an existing loan.
+      parameters:
+        - $ref: "#/components/parameters/LoanId"
+      responses:
+        "200":
+          description: Loan disbursed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanResponse"
+        "400":
+          description: Loan ID is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Loan not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /loans/disbursed/{id}:
+    patch:
+      summary: Set loan status to disbursed
+      description: Internal endpoint used to update an existing loan status to DISBURSED.
+      parameters:
+        - $ref: "#/components/parameters/LoanId"
+      responses:
+        "200":
+          description: Loan status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanResponse"
+        "400":
+          description: Loan ID is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Loan not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  parameters:
+    LoanId:
+      name: id
+      in: path
+      required: true
+      description: Loan ID
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    Loan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        companyID:
+          type: string
+        amount:
+          type: number
+        status:
+          type: string
+          enum:
+            - OFFERED
+            - DISBURSED
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - companyID
+        - amount
+        - status
+        - createdAt
+        - updatedAt
+
+    LoanResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Loan"
+      required:
+        - data
+
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        field:
+          type: string
+      required:
+        - code
+        - message
+
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApiError"
+      required:
+        - errors
