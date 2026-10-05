@@ -131,7 +131,7 @@ No environment variables need to be configured manually for local development. S
 
 Install dependencies:
 
-    npm ci
+    nvm use && npm ci
 
 Start the application and local DynamoDB:
 
@@ -172,7 +172,23 @@ Replace the ID with an existing loan ID:
 
 ## API Documentation
 
-The OpenAPI specification is available in `docs/openapi.yml`.
+The OpenAPI specification is available at `docs/openapi.yml`.
+
+To view and interact with the API using Swagger UI:
+
+    docker run --rm -p 8080:8080 -e SWAGGER_JSON=/docs/openapi.yml -v "$(pwd)/docs:/docs" swaggerapi/swagger-ui
+
+Open:
+
+    http://localhost:8080
+
+The `docs` directory is mounted into the container, so changes to `openapi.yml` are reflected after refreshing Swagger UI.
+
+### Swagger UI
+
+![Swagger API documentation](docs/screenshots/swagger-1.png)
+
+![Swagger API request and response](docs/screenshots/swagger-2.png)
 
 ## Implementation Notes
 
