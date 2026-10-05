@@ -1,5 +1,5 @@
 import { ApiError } from '../types'
-import { NotFoundAppError } from './errors'
+import { NotFoundAppError, ForbiddenAppError } from './errors'
 
 const DEFAULT_TIMEOUT = 10000
 
@@ -39,6 +39,8 @@ export const updateLoanStatus = async (loanId: string): Promise<Record<string, u
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
+            // Manual internal authorization
+            'internal_hash': process.env.INTERNAL_AUTH_SECRET ?? ''
         },
         signal: AbortSignal.timeout(DEFAULT_TIMEOUT),
     })
@@ -48,6 +50,10 @@ export const updateLoanStatus = async (loanId: string): Promise<Record<string, u
 
         if (response.status === 404 && body.errors?.[0]?.code == 'NOT_FOUND') {
             throw new NotFoundAppError(`App 2 returned ${response.status}; loan ID not found`)
+        }
+
+        if (response.status === 403 && body.errors?.[0]?.code == 'UNAUTHORIZED') {
+            throw new ForbiddenAppError(`App 2 returned ${response.status}; forbidden`)
         }
 
         throw new Error(`App 2 returned ${response.status}`)

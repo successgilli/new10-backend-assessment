@@ -16,6 +16,7 @@ const ctx = {} as Context
 
 describe('setLoanStatusDisbursed', () => {
     beforeEach(() => {
+        process.env.INTERNAL_AUTH_SECRET = 'test-auth-secret'
         jest.clearAllMocks()
     })
 
@@ -31,6 +32,7 @@ describe('setLoanStatusDisbursed', () => {
 
         const event = {
             pathParameters: { id: 'loan-1' },
+            headers: { internal_hash: 'test-auth-secret' },
         } as unknown as APIGatewayEvent
 
         const response = await setLoanStatusDisbursed(event, ctx)
@@ -47,6 +49,41 @@ describe('setLoanStatusDisbursed', () => {
         expect(response?.statusCode).toBe(400)
     })
 
+    it('returns 403 when lacks auth header', async () => {
+        mockSend.mockRejectedValue(
+            new ConditionalCheckFailedException({
+                message: 'Condition failed',
+                $metadata: {},
+            })
+        )
+
+        const event = {
+            pathParameters: { id: 'missing-loan' },
+        } as unknown as APIGatewayEvent
+
+        const response = await setLoanStatusDisbursed(event, ctx)
+
+        expect(response?.statusCode).toBe(403)
+    })
+
+        it('returns 403 when has auth header with bad secret', async () => {
+        mockSend.mockRejectedValue(
+            new ConditionalCheckFailedException({
+                message: 'Condition failed',
+                $metadata: {},
+            })
+        )
+
+        const event = {
+            pathParameters: { id: 'missing-loan' },
+            headers: { internal_hash: 'test-auth-secret-wrong' },
+        } as unknown as APIGatewayEvent
+
+        const response = await setLoanStatusDisbursed(event, ctx)
+
+        expect(response?.statusCode).toBe(403)
+    })
+
     it('returns 404 when loan does not exist', async () => {
         mockSend.mockRejectedValue(
             new ConditionalCheckFailedException({
@@ -57,6 +94,7 @@ describe('setLoanStatusDisbursed', () => {
 
         const event = {
             pathParameters: { id: 'missing-loan' },
+            headers: { internal_hash: 'test-auth-secret' },
         } as unknown as APIGatewayEvent
 
         const response = await setLoanStatusDisbursed(event, ctx)

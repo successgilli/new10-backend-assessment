@@ -8,7 +8,7 @@ import { fetchCompany, updateLoanStatus } from './helpers'
 import { randomUUID } from 'crypto'
 import { ScanCommand } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
-import { NotFoundAppError } from './errors'
+import { NotFoundAppError, ForbiddenAppError } from './errors'
 
 export const createLoan = async (event: APIGatewayEvent, ctx: Context) => {
     try {
@@ -130,6 +130,20 @@ export const disburse = async (event: APIGatewayEvent, ctx: Context) => {
                         {
                             code: 'NOT_FOUND',
                             message: 'Loan not found',
+                        },
+                    ],
+                }),
+            }
+        }
+
+        if (err instanceof ForbiddenAppError) {
+            return {
+                statusCode: 403,
+                body: JSON.stringify({
+                    errors: [
+                        {
+                            code: 'FORBIDDEN',
+                            message: 'forbidden',
                         },
                     ],
                 }),

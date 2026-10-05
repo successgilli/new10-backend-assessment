@@ -27,6 +27,22 @@ export const setLoanStatusDisbursed = async (event: APIGatewayEvent, ctx: Contex
             }
         }
 
+        // Manual internal authorization
+       if (!event.headers?.internal_hash || event.headers.internal_hash !== process.env.INTERNAL_AUTH_SECRET) {
+            return {
+                statusCode: 403,
+                body: JSON.stringify({
+                    errors: [
+                        {
+                            code: 'FORBIDDEN',
+                            message: 'forbidden'
+                        },
+                    ],
+                }),
+            }
+       }
+
+
         // Update loan status
         const result = await dynamo.send(
             new UpdateCommand({

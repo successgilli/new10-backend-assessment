@@ -10,6 +10,7 @@ provider:
     AWS_SECRET_ACCESS_KEY: MockSecretAccessKey
     APP2_URL: ${env:APP2_URL, 'http://localhost:3000/dev'}
     KVK_SECRETE: ${env:KVK_SECRETE, 'l7xx1f2691f2520d487b902f4e0b57a0b197'}
+    INTERNAL_AUTH_SECRET: ${env:INTERNAL_AUTH_SECRET, 'super_secret_token'}
 
 plugins:
   - serverless-dynamodb
